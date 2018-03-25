@@ -1,0 +1,1 @@
+document.write('welcome webpack4.xxxx')
