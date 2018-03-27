@@ -1,6 +1,8 @@
 const path = require('path'); // node系统模块
 const HtmlWebpackPlugin = require('html-webpack-plugin'); // 生成html
 const cleanWebpackPlugin = require('clean-webpack-plugin'); // 清除
+const uglify = require('uglifyjs-webpack-plugin'); // 压缩
+const ExtractTextPlugin = require('extract-text-webpack-plugin'); // 分离
 const webpack = require('webpack');
 
 module.exports = {
@@ -13,6 +15,29 @@ module.exports = {
     output:{
         path:path.resolve(__dirname,'dist'), // path 必须是绝对路径
         filename:'[name].bundle.js'
+    },
+    module: {
+        rules:[
+            {
+                test:/\.css$/,
+                use:ExtractTextPlugin.extract({
+                    fallback:'style-loader',
+                    use:'css-loader',
+                    publicPath:'../' // 将提取出来的css中，包含图片的路径，前面加上../
+                    // 因为css引用图片打包后，前面的相对路径都没有了
+                })
+            },
+            {
+                test:/\.(png|jpg|gif)$/,
+                use:[{
+                    loader:'url-loader',
+                    options:{
+                        limit:20000,
+                        outputPath:'images' // 图片打包出去的目录
+                    }
+                }]
+            }
+        ]
     },
     devServer:{
         // 设置服务器访问的基本目录
@@ -27,6 +52,7 @@ module.exports = {
         hot:true
     },
     plugins:[
+        new uglify(),
         new webpack.HotModuleReplacementPlugin(),
         new cleanWebpackPlugin(['dist']),
         new HtmlWebpackPlugin({
@@ -41,5 +67,6 @@ module.exports = {
             title:'I love 222',
             template:'./src/view/index.html'
         }),
+        new ExtractTextPlugin('css/index.css')
     ]
 }
