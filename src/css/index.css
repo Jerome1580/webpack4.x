@@ -1,3 +1,13 @@
 body{
-    background: url('../images/111.png') repeat-y;
+    background: url('../images/111.png') right top repeat-y ;
+}
+#box{
+    transform: rotate(45deg);
+}
+
+.a{
+    background-color: #fff;
+}
+.b{
+    background-color: #fff;
 }
