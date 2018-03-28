@@ -40,6 +40,11 @@ module.exports = {
 
             },
             {
+                test: /\.(js|jsx)$/,
+                use: ['babel-loader'],
+                exclude:/node_modules/
+            },
+            {
                 test: /\.(png|jpg|gif)$/,
                 use: [{
                     loader: 'url-loader',
@@ -51,6 +56,7 @@ module.exports = {
             }
         ]
     },
+    devtool: "source-map",
     devServer: {
         // 设置服务器访问的基本目录
         contentBase: path.resolve(__dirname, 'dist'),
