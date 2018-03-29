@@ -4,6 +4,7 @@ const cleanWebpackPlugin = require('clean-webpack-plugin'); // 清除
 const uglify = require('uglifyjs-webpack-plugin'); // 压缩
 const ExtractTextPlugin = require('extract-text-webpack-plugin'); // 分离
 const PurifyCssWebpack = require('purifycss-webpack'); // 消除冗余css
+const CopyWebpackPlugin = require('copy-webpack-plugin'); // 静态资源输出
 
 const glob = require('glob');
 const webpack = require('webpack');
@@ -12,7 +13,8 @@ module.exports = {
     // 入口
     entry: {
         index: './src/index.js',
-        index2: './src/index2.js'
+        index2: './src/index2.js',
+        'jquery':'jquery'
     },
     // 出口
     output: {
@@ -88,6 +90,24 @@ module.exports = {
         new ExtractTextPlugin('css/index.css'),
         new PurifyCssWebpack({
             paths:glob.sync(path.join(__dirname,'src/view/*.html'))
+        }),
+        new CopyWebpackPlugin([{
+            from:path.resolve(__dirname,'src/assets'),
+            to:'./public'
+        }]),
+        new webpack.ProvidePlugin({
+            $:'jquery'
         })
-    ]
+    ],
+    optimization:{
+        splitChunks:{
+            cacheGroups:{
+                vendor:{
+                    chunks:'initial',
+                    name:'jquery',
+                    enforce:true
+                }
+            }
+        }
+    }
 }
